@@ -1,0 +1,220 @@
+from random import *
+from collections import Counter
+print("Эта версия техасского покера на двоих! Игра происходит без ставок, все карты видны обоим игрокам, поэтому побеждает тот кто собирает более сильную комбинацию. В конце выводится с каким счетом(сколько баллов суммарно за собранные комбинации) игроки побеждают или играют вничью. Let's go)")
+cards = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'В', 'Д', 'К', 'Т']
+masti = ['пик', 'черви', 'крести', 'буби']
+res = []
+"""Прописываем всевозможные комбинации карт"""
+for s in masti:
+    for r in cards:
+        res.append(f'{r} {s}')
+shuffle(res)
+button = input('Введите c если хотите взять 2 карты для 1 игрока, введите exit если хотите выйти с игры: ')
+poker_1, poker_2 = [], [] # карты первого игрока
+g1, g2 = [], [] # только карты с достоинством
+masti_1, masti_2 = [], [] # только масти карт
+if button == 'c':
+    card_1 = choice(res)
+    ind = card_1.find(' ')
+    poker_1.append(card_1)
+    g1.append(card_1[:ind])
+    masti_1.append(card_1[ind+1:])
+    res.remove(card_1)
+    card_2 = choice(res)
+    ind = card_2.find(' ')
+    poker_1.append(card_2)
+    g1.append(card_2[:ind])
+    masti_1.append(card_2[ind+1:])
+    res.remove(card_2)
+    print("Карты 1 игрока:", *poker_1)
+    button = input("Введите c если хотите взять 2 карты для 2 игрока, введите exit если хотите выйти с игры: ")
+    if button == 'c':
+        card2_1 = choice(res)
+        ind = card2_1.find(' ')
+        res.remove(card2_1)
+        poker_2.append(card2_1)
+        masti_2.append(card2_1[ind+1:])
+        g2.append(card2_1[:ind])
+        card2_2 = choice(res)
+        ind = card2_2.find(' ')
+        res.remove(card2_2)
+        poker_2.append(card2_2)
+        masti_2.append(card2_2[ind+1:])
+        g2.append(card2_2[:ind])
+        print("Карты 2 игрока:", *poker_2)
+    else:
+        print("Заходи еще:)")
+        exit()
+else:
+    print("Заходи еще:)")
+    exit()
+"""Алгоритм для выдачи 5 карт игрокам"""
+button = input("Если хотите открыть сразу 5 карт введите all(в будущем такой возможности не будет), если хотите открывать по одной карте всю игру введите c, если хотите выйти из игры нажмите exit: ")
+if button == 'all':
+    card_poker = choice(res)
+    ind = card_poker.find(' ')
+    poker_1.append(card_poker), poker_2.append(card_poker)
+    g1.append(card_poker[:ind]), g2.append(card_poker[:ind])
+    masti_1.append(card_poker[ind+1:]), masti_2.append(card_poker[ind+1:])
+    res.remove(card_poker)
+    card_poker1 = choice(res)
+    ind = card_poker1.find(' ')
+    poker_1.append(card_poker1), poker_2.append(card_poker1)
+    masti_1.append(card_poker1[ind+1:]), masti_2.append(card_poker1[ind+1:])
+    g1.append(card_poker1[:ind]), g2.append(card_poker1[:ind])
+    res.remove(card_poker1)
+    card_poker2 = choice(res)
+    ind = card_poker2.find(' ')
+    poker_1.append(card_poker2), poker_2.append(card_poker2)
+    g1.append(card_poker2[:ind]), g2.append(card_poker2[:ind])
+    masti_1.append(card_poker2[ind+1:]), masti_2.append(card_poker2[ind+1:])
+    res.remove(card_poker2)
+    card_poker3 = choice(res)
+    ind = card_poker3.find(' ')
+    poker_1.append(card_poker3), poker_2.append(card_poker3)
+    g1.append(card_poker3[:ind]), g2.append(card_poker3[:ind])
+    masti_1.append(card_poker3[ind+1:]), masti_2.append(card_poker3[ind+1:])
+    res.remove(card_poker3)
+    card_poker4 = choice(res)
+    ind = card_poker4.find(' ')
+    poker_1.append(card_poker4), poker_2.append(card_poker4)
+    masti_1.append(card_poker4[ind+1:]), masti_2.append(card_poker4[ind+1:])
+    g1.append(card_poker4[:ind]), g2.append(card_poker4[:ind])
+    res.remove(card_poker4)
+    print("Карты 1 игрока после разложения:", *poker_1)
+    print("Карты 2 игрока после разложения:", *poker_2)
+elif button == 'c':
+    for i in range(5):
+        button = input("Раскройте одну карту из 5 карт с помощью введения c: ")
+        if button == 'c':
+            card_poker = choice(res)
+            ind = card_poker.find(" ")
+            print(card_poker)
+            poker_1.append(card_poker), poker_2.append(card_poker)
+            g1.append(card_poker[:ind]), g2.append(card_poker[:ind])
+            masti_1.append(card_poker[ind+1:]), masti_2.append(card_poker[ind+1:])
+            res.remove(card_poker)
+
+    print("Карты 1 игрока после разложения:", *poker_1)
+    print("Карты 2 игрока после разложения:", *poker_2)
+else:
+    print("Заходи ещё:)")
+    exit()
+cnt_poker_1, cnt_poker_2 = dict(sorted(Counter(g1).items(), key=lambda x: x[1], reverse=True)), dict(sorted(Counter(g2).items(), key=lambda x: x[1], reverse=True))# сортируем карты по частоте достоинства
+cnt_masti_1, cnt_masti_2 = dict(sorted(Counter(masti_1).items(), key=lambda x: x[1], reverse=True)), dict(sorted(Counter(masti_2).items(), key=lambda x: x[1], reverse=True)) # сортируем карты по частоте масте1
+"""Какие комбинации окажутся выигрышными для игроков"""
+
+"""Проверка наличия старшей карты"""
+cnt_1, cnt_2 = 0, 0
+if max(cnt_poker_1.keys()) > max(cnt_poker_2.keys()):
+    cnt_1 += 1
+elif max(cnt_poker_2.keys()) > max(cnt_poker_1.keys()):
+    cnt_2 += 1
+else:
+    cnt_1 += 1
+    cnt_2 += 1
+"""Проверка наличия пары карт у игроков"""
+if len(set(g1)) == 6 and len(set(g2)) == 7:
+    cnt_1 += 2
+elif len(set(g1)) == 7 and len(set(g2)) == 6:
+    cnt_2 += 2
+elif len(set(g1)) == 6 and len(set(g2)) == 6:
+    if list(cnt_poker_1.keys())[0] > list(cnt_poker_2.keys())[0]:
+        cnt_1 += 2
+    elif list(cnt_poker_2.keys())[0] > list(cnt_poker_1.keys())[0]:
+        cnt_2 += 2
+    else:
+        cnt_1 += 2
+        cnt_2 += 2
+
+"""Проверка наличия 2 пар карт у игроков"""
+if (list(cnt_poker_1.values())[0] == 2 and list(cnt_poker_1.values())[1] == 2 and list(cnt_poker_1.values())[2] == 1) and max(cnt_poker_2.values()) == 1:
+    cnt_1 += 3
+elif (list(cnt_poker_2.values())[0] == 2 and list(cnt_poker_2.values())[1] == 2 and list(cnt_poker_2.values())[2] == 1) and max(cnt_poker_1.values()) == 1:
+    cnt_2 += 3
+elif (list(cnt_poker_2.values())[0] == 2 and list(cnt_poker_2.values())[1] == 2 and list(cnt_poker_2.values())[2] == 1) and (list(cnt_poker_1.values())[0] == 2 and list(cnt_poker_1.values())[1] == 2 and list(cnt_poker_1.values())[2] == 1):
+    if max(list(cnt_poker_1.keys()))[:2] > max(list(cnt_poker_2.keys()))[:2]:
+        cnt_1 += 3
+    elif max(list(cnt_poker_1.keys()))[:2] < max(list(cnt_poker_2.keys()))[:2]:
+        cnt_2 += 3
+    else:
+        cnt_1 += 3
+        cnt_2 += 3
+"""Проверка наличия сета у карт"""
+if (list(cnt_poker_1.values())[0] == 3 and list(cnt_poker_1.values())[1] == 1) and max(cnt_poker_2.values()) < 3:
+    cnt_1 += 4
+elif (list(cnt_poker_2.values())[0] == 3 and list(cnt_poker_2.values())[1] == 1) and max(cnt_poker_1.values()) < 3:
+    cnt_2 += 4
+if (list(cnt_poker_2.values())[0] == 3 and list(cnt_poker_2.values())[1] == 1) and (list(cnt_poker_1.values())[0] == 3 and list(cnt_poker_1.values())[1] == 1):
+    if list(cnt_poker_1.keys())[0] > list(cnt_poker_2.keys())[0]:
+        cnt_1 += 4
+    elif list(cnt_poker_1.keys())[0] < list(cnt_poker_2.keys())[0]:
+        cnt_2 += 4
+    else:
+        cnt_1 += 4
+        cnt_2 += 4
+
+"""Проверка наличия стрита у игроков"""
+if ((cards.index(g1[0])==cards.index(g1[1])-1 and cards.index(g1[1])==cards.index(g1[2])-1 and cards.index(g1[2])==cards.index(g1[3])-1 and cards.index(g1[3])==cards.index(g1[4])-1) or (cards.index(g1[1])==cards.index(g1[2])-1 and cards.index(g1[2])==cards.index(g1[3])-1 and cards.index(g1[3])==cards.index(g1[4])-1 and cards.index(g1[4])==cards.index(g1[5])-1) or (cards.index(g1[2])==cards.index(g1[3])-1 and cards.index(g1[3])==cards.index(g1[4])-1 and cards.index(g1[4])==cards.index(g1[5])-1 and cards.index(g1[5])==cards.index(g1[6])-1)) and max(cnt_masti_1.values()) < 5:
+    cnt_1 += 5
+if ((cards.index(g2[0])==cards.index(g2[1])-1 and cards.index(g2[1])==cards.index(g2[2])-1 and cards.index(g2[2])==cards.index(g2[3])-1 and cards.index(g2[3])==cards.index(g2[4])-1) or (cards.index(g2[1])==cards.index(g2[2])-1 and cards.index(g2[2])==cards.index(g2[3])-1 and cards.index(g2[3])==cards.index(g2[4])-1 and cards.index(g2[4])==cards.index(g2[5])-1) or (cards.index(g2[2])==cards.index(g2[3])-1 and cards.index(g2[3])==cards.index(g2[4])-1 and cards.index(g2[4])==cards.index(g2[5])-1 and cards.index(g2[5])==cards.index(g2[6])-1)) and max(cnt_masti_2.values()) < 5:
+    cnt_2 += 5
+"""Проверка наличия флэша"""
+if (max(cnt_masti_1.values()) >= 5 and max(cnt_masti_2.values()) < 5) and ((cards.index(g1[0])==cards.index(g1[1])-1 and cards.index(g1[1])==cards.index(g1[2])-1 and cards.index(g1[2])==cards.index(g1[3])-1 and cards.index(g1[3])==cards.index(g1[4])-1) or (cards.index(g1[1])==cards.index(g1[2])-1 and cards.index(g1[2])==cards.index(g1[3])-1 and cards.index(g1[3])==cards.index(g1[4])-1 and cards.index(g1[4])==cards.index(g1[5])-1) or (cards.index(g1[2])==cards.index(g1[3])-1 and cards.index(g1[3])==cards.index(g1[4])-1 and cards.index(g1[4])==cards.index(g1[5])-1 and cards.index(g1[5])==cards.index(g1[6])-1)) == 0:
+    cnt_1 += 6
+elif (max(cnt_masti_1.values()) < 5 and max(cnt_masti_2.values()) >= 5) and ((cards.index(g2[0])==cards.index(g2[1])-1 and cards.index(g2[1])==cards.index(g2[2])-1 and cards.index(g2[2])==cards.index(g2[3])-1 and cards.index(g2[3])==cards.index(g2[4])-1) or (cards.index(g2[1])==cards.index(g2[2])-1 and cards.index(g2[2])==cards.index(g2[3])-1 and cards.index(g2[3])==cards.index(g2[4])-1 and cards.index(g2[4])==cards.index(g2[5])-1) or (cards.index(g2[2])==cards.index(g2[3])-1 and cards.index(g2[3])==cards.index(g2[4])-1 and cards.index(g2[4])==cards.index(g2[5])-1 and cards.index(g2[5])==cards.index(g2[6])-1)) == 0:
+    cnt_2 += 6
+elif (max(cnt_masti_1.values()) >= 5 and max(cnt_masti_2.values()) >= 5) and ((cards.index(g2[0])==cards.index(g2[1])-1 and cards.index(g2[1])==cards.index(g2[2])-1 and cards.index(g2[2])==cards.index(g2[3])-1 and cards.index(g2[3])==cards.index(g2[4])-1) or (cards.index(g2[1])==cards.index(g2[2])-1 and cards.index(g2[2])==cards.index(g2[3])-1 and cards.index(g2[3])==cards.index(g2[4])-1 and cards.index(g2[4])==cards.index(g2[5])-1) or (cards.index(g2[2])==cards.index(g2[3])-1 and cards.index(g2[3])==cards.index(g2[4])-1 and cards.index(g2[4])==cards.index(g2[5])-1 and cards.index(g2[5])==cards.index(g2[6])-1)) == 0 and ((cards.index(g1[0])==cards.index(g1[1])-1 and cards.index(g1[1])==cards.index(g1[2])-1 and cards.index(g1[2])==cards.index(g1[3])-1 and cards.index(g1[3])==cards.index(g1[4])-1) or (cards.index(g1[1])==cards.index(g1[2])-1 and cards.index(g1[2])==cards.index(g1[3])-1 and cards.index(g1[3])==cards.index(g1[4])-1 and cards.index(g1[4])==cards.index(g1[5])-1) or (cards.index(g1[2])==cards.index(g1[3])-1 and cards.index(g1[3])==cards.index(g1[4])-1 and cards.index(g1[4])==cards.index(g1[5])-1 and cards.index(g1[5])==cards.index(g1[6])-1)) == 0:
+    time, time_2 = set(), set()
+    for i in poker_1:
+        if i[2:] == max(cnt_masti_1.keys()):
+            time.add(i[0])
+    for i in poker_2:
+        if i[2:] == max(cnt_masti_2.keys()):
+            time_2.add(i[0])
+    if max(time) > max(time_2):
+        cnt_1 += 6
+    elif max(time) < max(time_2):
+        cnt_2 += 6
+    else:
+        cnt_1 += 6
+        cnt_2 += 6
+"""Проверка наличия фулл хауса"""
+if ((max(cnt_poker_1.values()) == 3 and list(cnt_poker_1.values())[1]==2 and list(cnt_poker_1.values())[2]==1)) and list(cnt_poker_1.keys())[0]>list(cnt_poker_2.keys())[0]:
+    cnt_1 += 7
+elif (max(cnt_poker_2.values())==3 and list(cnt_poker_2.values())[1]==2 and list(cnt_poker_2.values())[2]==1) and list(cnt_poker_2.keys())[0]>list(cnt_poker_1.keys())[0]:
+    cnt_2 += 7
+"""Проверка наличия каре"""
+if max(cnt_poker_1.values())==4 and max(cnt_poker_2.values())<4:
+    cnt_1 += 8
+elif max(cnt_poker_2.values())==4 and max(cnt_poker_1.values())<4:
+    cnt_2 += 8
+elif max(cnt_poker_2.values())==4 and max(cnt_poker_1.values())==4:
+    if list(cnt_poker_1.keys())[0] > list(cnt_poker_2.keys())[0]:
+        cnt_1 += 8
+    else:
+        cnt_2 += 8
+"""Проверка наличия стрит флэша"""
+if ((cards.index(g1[0])==cards.index(g1[1])-1 and cards.index(g1[1])==cards.index(g1[2])-1 and cards.index(g1[2])==cards.index(g1[3])-1 and cards.index(g1[3])==cards.index(g1[4])-1) or (cards.index(g1[1])==cards.index(g1[2])-1 and cards.index(g1[2])==cards.index(g1[3])-1 and cards.index(g1[3])==cards.index(g1[4])-1 and cards.index(g1[4])==cards.index(g1[5])-1) or (cards.index(g1[2])==cards.index(g1[3])-1 and cards.index(g1[3])==cards.index(g1[4])-1 and cards.index(g1[4])==cards.index(g1[5])-1 and cards.index(g1[5])==cards.index(g1[6])-1)) and max(cnt_masti_1.values()) >= 5:
+    cnt_1 += 8
+if ((cards.index(g2[0])==cards.index(g2[1])-1 and cards.index(g2[1])==cards.index(g2[2])-1 and cards.index(g2[2])==cards.index(g2[3])-1 and cards.index(g2[3])==cards.index(g2[4])-1) or (cards.index(g2[1])==cards.index(g2[2])-1 and cards.index(g2[2])==cards.index(g2[3])-1 and cards.index(g2[3])==cards.index(g2[4])-1 and cards.index(g2[4])==cards.index(g2[5])-1) or (cards.index(g2[2])==cards.index(g2[3])-1 and cards.index(g2[3])==cards.index(g2[4])-1 and cards.index(g2[4])==cards.index(g2[5])-1 and cards.index(g2[5])==cards.index(g2[6])-1)) and max(cnt_masti_2.values()) >= 5:
+    cnt_2 += 8
+"""Проверка наличия рояль флэша"""
+if (g1[0] == '10' and g1[1] == 'В' and g1[2] == 'Д' and g1[3] == 'К' and g1[4] == 'Т') or (g1[1] == '10' and g1[2] == 'В' and g1[3] == 'Д' and g1[4] == 'К' and g1[5] == 'Т') or (g1[2] == '10' and g1[3] == 'В' and g1[4] == 'Д' and g1[5] == 'К' and g1[6] == 'Т'):
+    if (masti_1[0]==masti_1[1]==masti_1[2]==masti_1[3]==masti_1[4]) or (masti_1[1]==masti_1[2]==masti_1[3]==masti_1[4]==masti_1[5]) or (masti_1[2]==masti_1[3]==masti_1[4]==masti_1[5]==masti_1[6]):
+        print("У ТЕБЯ ФЛЭШ РОЯЛЬ))))")
+        cnt_1 += 9
+if (g2[0] == '10' and g2[1] == 'В' and g2[2] == 'Д' and g2[3] == 'К' and g2[4] == 'Т') or (g2[1] == '10' and g2[2] == 'В' and g2[3] == 'Д' and g2[4] == 'К' and g2[5] == 'Т') or (g2[2] == '10' and g2[3] == 'В' and g2[4] == 'Д' and g2[5] == 'К' and g2[6] == 'Т'):
+    if (masti_2[0]==masti_2[1]==masti_2[2]==masti_2[3]==masti_2[4]) or (masti_2[1]==masti_2[2]==masti_2[3]==masti_2[4]==masti_2[5]) or (masti_2[2]==masti_2[3]==masti_2[4]==masti_2[5]==masti_2[6]):
+        print("У ТЕБЯ ФЛЭШ РОЯЛЬ))))")
+        cnt_2 += 9
+"""Алгоритм для победы игроков"""
+def win_game(cnt_1, cnt_2):
+    if cnt_1 > cnt_2:
+        print(f"Игрок 1 выиграл со счетом: {cnt_1}:{cnt_2}")
+    elif cnt_1 < cnt_2:
+        print(f"Игрок 2 выиграл со счетом: {cnt_2}:{cnt_1}")
+    else:
+        print(f"Ничья): {cnt_1}:{cnt_2}")
+win_game(cnt_1, cnt_2)
+input()
