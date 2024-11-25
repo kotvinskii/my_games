@@ -1,0 +1,158 @@
+print("Эта версия игры 21 или очко на двоих. Для тех кто не знает: Суть игры состоит в\
+ том, чтобы набрать больше очков чем твой соперник или ровно 21 очко(тогда вы точно не проиграли).\
+    Если выигрываете, получаете 500 очков, если проигрываете, у вас отнимается 500 очков, если оба игрока\
+      набирают 21, они получают 1000 очков на баланс. Если же у обоих игроков в ходе игры больше 21, у них отнимаются 500 очков."
+      "Если хотите прекратить игру введите exit")
+from random import *
+cnt_1, cnt_2 = 1500, 1500 # изначальный баланс 2 игроков
+numbers = {'6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'j': 2, 'q': 3, 'k': 4, 'a': 11} # значения карт
+coloda = ['6','7','8','9','10','q','j','k','a']
+shuffle(coloda)
+dict_count = {}
+name = input("Если хотите начать игру введите start, если нет введите exit: ")
+if name == 'start':
+    while cnt_1 > 0 and cnt_2 > 0:
+        def player_1():
+            print("Очередь 1 игрока")
+            play = 0
+            card = input("Берешь карту? ")
+            while card != 'stop':
+                n = choice(coloda)
+                if n not in dict_count:
+                    dict_count[n] = 1
+                else:
+                    dict_count[n] += 1
+                if dict_count[n] == 4:
+                    coloda.remove(n)
+                if n == 'a':
+                    g = choice(coloda)
+                    if g not in dict_count:
+                        dict_count[g] = 1
+                    else:
+                        dict_count[g] += 1
+                    if dict_count[g] == 4:
+                        coloda.remove(g)
+                    if n == g:
+                        print("У тебя Москва!!(Ты уже выиграл)")
+                        break
+                    else:
+                        if card == 'yes':
+                            n = int(input("Карту какого номинала хочешь взять: 11 или 1?"))
+                            if n == 11:
+                                play += 11
+                            else:
+                                play += 1
+                        else:
+                            print("Твой баланс:", play)
+                            break
+                else:
+                    if card == 'stop':
+                        print("Твой баланс:", play)
+                        break
+                    else:
+                        play += numbers[n]
+                        print("Твой баланс:", play)
+                card = input("Берешь карту? ")
+                if play > 21:
+                    break
+            return play
+
+        shuffle(coloda)
+        def player_2():
+            print("Теперь очередь 2 игрока")
+            play = 0
+            card = 0
+            while card != 'stop' and play <= 21:
+                n = choice(coloda)
+                if n not in dict_count:
+                    dict_count[n] = 1
+                else:
+                    dict_count[n] += 1
+                if dict_count[n] == 4:
+                    coloda.remove(n)
+                if n == 'a':
+                    g = choice(coloda)
+                    if g not in dict_count:
+                        dict_count[g] = 1
+                    else:
+                        dict_count[g] += 1
+                    if dict_count[g] == 4:
+                        coloda.remove(g)
+                    if n == g:
+                        print("У тебя Москва!!(Ты уже выиграл)")
+                        break
+                    else:
+                        if card == 'yes':
+                            n = int(input("Карту какого номинала хочешь взять: 11 или 1?"))
+                            if n == 11:
+                                play += 11
+                            else:
+                                play += 1
+                        else:
+                            print("Твой баланс:", play)
+                            break
+                    card = input("Берешь карту?")
+                else:
+                    card = input(f"Берешь карту?")
+                    if card == 'yes':
+                        play += numbers[n]
+                        print("Твой баланс:", play)
+                    else:
+                        print("Твой баланс:", play)
+                        break
+
+            return play
+        play, play_2 = player_1(), player_2()
+        if play <= 21 and play_2 > 21:
+            print("Игрок 1 победил")
+            cnt_1 += 500
+            cnt_2 -= 500
+        elif play < 21 and play_2 < 21:
+            if play > play_2:
+                print("Игрок 1 победил")
+                cnt_1 += 500
+                cnt_2 -= 500
+            elif play < play_2:
+                print("Игрок 2 победил")
+                cnt_2 += 500
+                cnt_1 -= 500
+            else:
+                print("Объявляю ничью!")
+                cnt_1 -= 250
+                cnt_2 -= 250
+        elif play_2 > play and play_2 <= 21:
+            print("Игрок 2 победил")
+            cnt_2 += 500
+            cnt_1 -= 500
+        elif play == play_2 == 21:
+            print("Оба победили")
+            cnt_1 += 1000
+            cnt_2 += 1000
+        elif play > 21 and play_2 > 21:
+            print("Оба лоха")
+            cnt_1 -= 500
+            cnt_2 -= 500
+        elif play > 21 and play_2 <= 21:
+            print("Игрок 2 победил")
+            cnt_2 += 500
+            cnt_1 -= 500
+        print("Баланс 1 игрока:", cnt_1)
+        print("Баланс 2 игрока:", cnt_2)
+        name = input("Если хотите начать игру введите start, если нет введите exit: ")
+        if name == 'start':
+            continue
+        else:
+            print("Заходи еще:)")
+            exit()
+    if cnt_1 <= 0 and cnt_2 > 0:
+        print("Игрок 1 победил")
+        print("YESSSSSSSSSSSSSSSSSSSSSSSSS")
+    elif cnt_1 > 0 and cnt_2 <= 0:
+        print("Игрок 2 победил")
+        print("YESSSSSSSSSSSSSSSSSSSSSSSSS")
+    else:
+        print("Умудрились проебать оба(((")
+        print("NOOOOOOOOOOOOOOOOOOOOOOOOO")
+else:
+    print("Заходи еще:)")
+    exit()
