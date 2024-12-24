@@ -1,0 +1,73 @@
+"""Алгоритм игры морской бой"""
+print("Привет! Это версия игры Морской бой на двоих, где корабли могут стоять касаться друг друга как сторонами так и углами. Побеждает тот, кто первый уничтожит все корабли противника. R на поле - попал в корабль, F - промазал")
+import ships_placement
+p1, p2 = ships_placement.player_1(), ships_placement.player_2()
+cnt_1, cnt_2 = 0, 0
+res_1, res_2 = [['O' for j in range(10)] for i in range(10)], [['O' for j1 in range(10)] for i1 in range(10)]
+"""Ходы 1 игрока"""
+def game_1(row, col):
+    if (row, col) in res_1 or row < 1 or row > 10 or col < 1 or col > 10:
+        print("Так ходить нельзя! Попробуйте еще раз")
+        return False
+    else:
+        if 'S' in p2[row-1][col-1]:
+            p2[row-1][col-1] = p2[row-1][col-1][0].replace(p2[row-1][col-1][0], 'X')
+            res_2[row - 1][col - 1] = res_2[row-1][col-1][0].replace(res_2[row - 1][col - 1][0], 'R')
+            print(*res_2, sep='\n')
+            return True
+        res_2[row - 1][col - 1] = res_2[row - 1][col - 1][0].replace(res_2[row - 1][col - 1][0], 'F')
+        print(*res_2, sep='\n')
+        return False
+
+
+"""Ходы 2 игрока"""
+def game_2(row, col):
+    if (row, col) in res_2 or row < 1 or row > 10 or col < 1 or col > 10:
+        print("Так ходить нельзя! Попробуйте еще раз")
+        return False
+    else:
+        if 1 <= row <= 10 and 1 <= col <= 10:
+            if 'S' in p1[row-1][col-1]:
+                p1[row-1][col-1] = p1[row-1][col-1][0].replace(p1[row-1][col-1][0], 'X')
+                res_1[row - 1][col - 1] = res_1[row-1][col-1][0].replace(res_1[row - 1][col - 1][0], 'R') # Сбитые корабли
+                return True
+            res_1[row - 1][col - 1] = res_1[row-1][col-1][0].replace(res_1[row - 1][col - 1][0], 'F')
+            print(*res_1, sep='\n')
+            return False
+pos = 1 # номер текущего игрока, по умолчанию значение 1
+ships_1, ships_2 = 0, 0 # длины сбитых кораблей для каждого игрока
+while cnt_1 != 20 or cnt_2 != 20: # пока игрок 1 или игрок 2 не собъет все корабли
+    row = int(input(f"Игрок {pos} вводит строку для последующего удара: "))
+    col = int(input(f"Игрок {pos} вводит столбец для последующего удара: "))
+    if pos == 1:
+        if game_1(row, col): # Если попал в палубу корабля, игрок 1 бьет до тех пор пока не промажет
+            while 'S' in p2[row-1][col-1]:
+                ships_1 += 1
+                if p2.count(p2[row-1][col-1]) == 0:
+                    print(f"Игрок {pos} уничтожил {ships_1}-палубный корабль")
+                    cnt_1 += ships_1
+                    ships = 0
+                else:
+                    print(f"Игрок {pos} повредил корабль!")
+                    if p2.count(p2[row-1][col-1]) == 0:
+                        print(f"Игрок {pos} уничтожил {ships_1}-палубный корабль")
+        else:
+            pos = 2 # меняем действующего игрока
+    else:
+        if game_2(row, col): # Если попал в палубу корабля, игрок 1 бьет до тех пор пока не промажет
+            while 'S' in p1[row-1][col-1]:
+                ships_2 += 1
+                if p1.count(p1[row-1][col-1]) == 0:
+                    print(f"Игрок {pos} уничтожил {ships_1}-палубный корабль")
+                    cnt_2 += ships_2
+                    ships_2 = 0
+                else:
+                    print(f"Игрок {pos} повредил корабль!")
+                    if p2.count(p2[row-1][col-1]) == 0:
+                        print(f"Игрок {pos} уничтожил {ships_1}-палубный корабль")
+        else:
+            pos = 1 # меняем действующего игрока
+if cnt_1 > cnt_2:
+    print("Игрок 1 победил")
+else:
+    print("Игрок 2 победил")
