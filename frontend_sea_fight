@@ -1,0 +1,182 @@
+"""Версия морского боя с фронтендом"""
+"""Основная информация"""
+from tkinter import *
+from tkinter import font, Button, Tk
+from tkinter.messagebox import showinfo
+import webbrowser
+root = Tk()
+root.title("Морской бой")
+label_font = font.Font(family='comicsans', weight='bold', size=37)
+btn_font = font.Font(family="arial", weight='bold', size=40)
+settings_btn_font = font.Font(family="arial", weight='bold', size=40)
+version_font = font.Font(family="arial", weight="bold", size=15)
+label_name = Label(root, text='Морской бой', font=label_font, bg="#f0f8ff", fg="#5686e1")
+label_name.pack(ipadx=100, ipady=10, fill=X)
+label_version = Label(root, text="v 1.0.0", font=version_font, bg="#f0f8ff", fg="#5686e1")
+label_version.pack(ipadx=0, ipady=0)
+pole_font = font.Font(family='arial', weight="bold", size=30)
+window_handler = Frame(root, bg="#ffffff")
+window_handler.columnconfigure(0, weight=1)
+window_handler.rowconfigure(0, weight=1)
+"""Окно Игра"""
+color = 'aquamarine'
+shir=650
+def play_button():
+    root_frame = Tk()
+    root_frame.title("Игра")
+    root_frame.geometry(f'{shir}x{shir}')
+    pole = Canvas(root_frame, bg=color, width=shir, height=shir)
+    pole.pack(fill=BOTH, expand=True)
+    but_ships = Button(pole, bg='gold', fg='white', width=20, height=5, text='Установить корабли', font="Courier", command=sea_fight)
+    but_ships.pack(anchor=CENTER, expand=1)
+    btn_back = Button(root_frame, text="<", font=settings_btn_font, bg='#5686e1', fg='#f0f8ff',
+                      command=lambda: show_frame(root, root_frame))
+    btn_back.place(x=10, y=50, width=35, height=50)
+    root_frame.mainloop()
+
+
+"""Окно Настройки"""
+def play_nastroiki():
+    global root_frame_nastroiki
+    root_frame_nastroiki = Tk()
+    root_frame_nastroiki.geometry("450x500")
+    btn_3 = Button(root_frame_nastroiki, text='Размер поля', font=pole_font, bg="black", fg='white', width=22, height=3, command=size_ships)
+    instruction = Button(root_frame_nastroiki, text="Правила <<Морского боя>>", font=pole_font, bg="black", fg="white", width=22, height=3, command=rules)
+    colours = Button(root_frame_nastroiki, text="Цвет игрового поля", font=pole_font, bg="black", fg="white", width=22, height=3, command=colours_btn)
+    btn_3.pack(anchor=N, expand=1)
+    instruction.pack(anchor=CENTER, expand=1)
+    colours.pack(anchor=S, expand=1)
+    btn_back = Button(root_frame_nastroiki, text="<", font=settings_btn_font, bg='#5686e1', fg='#f0f8ff', command=lambda: show_frame(root, root_frame_nastroiki))
+    btn_back.place(x=20, y=15, width=35, height=50)
+
+def show_frame(page_name, root_frame):
+    """Показать нужный фрейм"""
+    page_name.tkraise()
+    root_frame.destroy()
+
+"""Кнопка Размер поля"""
+def size_ships():
+    global root_frame_size_ships
+    root_frame_size_ships = Tk()
+    root_frame_size_ships.title("Размеры поля")
+    root_frame_size_ships.geometry("450x450")
+    but_size_ships, but_size_20, but_size_30 = Button(root_frame_size_ships, text='10X10', width=22, height=3, font=pole_font, bg='blue', fg='white', command=size_pole_10), Button(root_frame_size_ships, text='20X20', font=pole_font, bg='blue', fg='white', width=22, height=3, command=size_pole_20), Button(root_frame_size_ships, text='30X30', font=pole_font, bg='blue', fg='white', width=22, height=3, command=size_pole_30)
+    btn_back = Button(root_frame_size_ships, text="<", font=settings_btn_font, bg='#5686e1', fg='#f0f8ff',
+                      command=lambda: show_frame(root_frame_nastroiki, root_frame_size_ships))
+    btn_back.place(x=20, y=15, width=35, height=50)
+    but_size_ships.pack(anchor=N, expand=1)
+    but_size_20.pack(anchor=CENTER, expand=1)
+    but_size_30.pack(anchor=S, expand=1)
+"""Кнопка правила"""
+def rules():
+    root_frame_rules = Tk()
+    root_frame_rules.title("Правила морского боя")
+    root_frame_rules.geometry("1500x1000")
+    text = Canvas(root_frame_rules, bg='black', width=1500, height=1000)
+    text.create_text(620, 150, text="Игровое поле — обычно квадрат 10×10 у каждого игрока, на котором размещается флот кораблей. Горизонтали обычно нумеруются сверху вниз \n, "
+                                    "а вертикали помечаются буквами слева направо. \n"
+                                 "Размещаются: 1 корабль — ряд из 4 клеток («четырёхпалубный»; линкор), \n"
+                                 "2 корабля — ряд из 3 клеток («трёхпалубные»; крейсера), \n"
+                                 "3 корабля — ряд из 2 клеток («двухпалубные»; эсминцы), \n"
+                                 "4 корабля — 1 клетка («однопалубные»; торпедные катера). \n"
+                                 "При размещении корабли не могут касаться друг друга сторонами и углами. Встречаются, однако, варианты, когда касание углами не запрещается. \n"
+                                 "Встречаются также варианты игры, когда корабли могут размещаться буквой «Г» («трёх-» и «четырёхпалубные»), квадратом или зигзагом \n"
+                                "(«четырёхпалубные»). "
+                                 "Кроме того, есть варианты с другим набором кораблей (напр., один пятипалубный, два четырёхпалубных и т. д.) и/или \n"
+                                    "другой формой поля \n"
+                                    "(15×15 для пятипалубных (авианосец)).\n"
+                                 "Рядом со «своим» полем чертится «чужое» такого же размера, только пустое. Это участок моря, где плавают корабли противника. \n"
+                                 "Игровое поле по умолчанию белого цвета.", fill='white', font=('Times New Roman', 14))
+    text.place(x=0, y=0)
+    btn_back = Button(root_frame_rules, text="<", font=settings_btn_font, bg='#5686e1', fg='#f0f8ff',
+                      command=lambda: show_frame(root_frame_nastroiki, root_frame_rules))
+    btn_back.place(x=20, y=15, width=35, height=50)
+
+def sea_fight():
+    webbrowser.open_new_tab("http://ru.battleship-game.org/")
+"""Кнопка цвет"""
+def colours_btn():
+    global root_3
+    root_3 = Tk()
+    root_3.geometry('450x400')
+    red = Button(root_3, text='Красный', font=("Courier", 22), bg="red", fg="white", width=10, command=color_red)
+    green = Button(root_3, text='Зелёный', font=("Courier", 22), bg="green", fg="white", width=10, command=color_green)
+    blue = Button(root_3, text='Синий', font=("Courier", 22), bg="blue", fg="white", width=10, command=color_blue)
+    white = Button(root_3, text='Белый', font=("Courier", 22), bg="white", fg="black", width=10, command=color_white)
+    black = Button(root_3, text='Чёрный', font=("Courier", 22), bg="black", fg="white", width=10, command=color_black)
+    red.place(x=50, y=0)
+    red.pack(padx=10, pady=10)
+    green.place(x=100, y=0)
+    green.pack(padx=20, pady=10)
+    blue.place(x=150, y=0)
+    blue.pack(padx=30, pady=10)
+    white.place(x=200, y=0)
+    white.pack(padx=40, pady=10)
+    black.place(x=250, y=0)
+    black.pack(padx=50, pady=10)
+    btn_back = Button(root_3, text="<", font=settings_btn_font, bg='#5686e1', fg='#f0f8ff',
+                      command=lambda: show_frame(root_frame_nastroiki, root_3))
+    btn_back.place(x=20, y=15, width=35, height=50)
+
+"""Изменение цветов поля"""
+def color_red():
+    global color
+    showinfo("Принятие операции", "Цвет выбран")
+    root_3.destroy()
+    root_frame_nastroiki.destroy()
+    color = 'red'
+def color_blue():
+    global color
+    showinfo("Принятие операции", "Цвет выбран")
+    root_3.destroy()
+    root_frame_nastroiki.destroy()
+    color = 'blue'
+def color_white():
+    global color
+    showinfo("Принятие операции", "Цвет выбран")
+    root_3.destroy()
+    root_frame_nastroiki.destroy()
+    color = 'white'
+
+def color_black():
+    global color
+    showinfo("Принятие операции", "Цвет выбран")
+    root_3.destroy()
+    root_frame_nastroiki.destroy()
+    color = 'black'
+
+def color_green():
+    global color
+    showinfo("Принятие операции", "Цвет выбран")
+    root_3.destroy()
+    root_frame_nastroiki.destroy()
+    color='green'
+
+"""Изменение размеров поля"""
+def size_pole_10():
+    global shir
+    showinfo("Принятие операции", "Размер поля выбран")
+    root_frame_size_ships.destroy()
+    root_frame_nastroiki.destroy()
+    shir = 450
+
+def size_pole_20():
+    global shir
+    showinfo("Принятие операции", "Размер поля выбран")
+    root_frame_size_ships.destroy()
+    root_frame_nastroiki.destroy()
+    shir = 550
+
+def size_pole_30():
+    global shir
+    showinfo("Принятие операции", "Размер поля выбран")
+    root_frame_size_ships.destroy()
+    root_frame_nastroiki.destroy()
+    shir = 700
+
+root_2 = Button(root, text='Игра', bg='red', fg='white', font=btn_font, command=play_button)
+root_2.place(x=220, y=180, width=300, height=100)
+but_nastroiki = Button(root, text="Настройки", font=settings_btn_font, bg="red", fg="white", command=play_nastroiki)
+but_nastroiki.place(x=220, y=350, width=300, height=100)
+root.geometry('700x700')
+root.mainloop()
